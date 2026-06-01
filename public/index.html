@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Моє Резюме</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header id="header">
+    <div class="profile">
+        <h1>Моспан Віталій</h1>
+        <p class="subtitle">Студент • 18 років</p>
+    </div>
+    <button id="themeToggleBtn">Змінити тему</button>
+</header>
+
+<main class="container">
+
+    <section class="card">
+        <h2>Про себе</h2>
+        <p>Студент НУ"ЛП"</p>
+        <p>Номер телефону: +380 67 427 825 7</p>
+        <p class="email">Електронна пошта: <a href="mailto:vitaliimospan@gmail.com">vitaliimospan@gmail.com</a></p>
+        <p class="GitHub">GitHub: <a href="https://github.com/vitaliimospan" target="_blank">vitaliimospan</a></p>
+    </section>
+
+    <section class="card">
+        <h2>Технічні навички</h2>
+        <ul>
+            <li><strong>Мови:</strong> Python, JS, HTML, CSS</li>
+            <li><strong>Інструменти:</strong> Git, Visual Studio, Docker</li>
+            <li><strong>ОС:</strong> macOS, Ubuntu</li>
+        </ul>
+    </section>
+
+    <section class="card">
+        <h2>Досвід та проєкти</h2>
+        <ul>
+            <li>Web pentester, Active directory pentester</li>
+        </ul>
+    </section>
+
+    <section class="card">
+        <h2>Хобі</h2>
+        <p>комп'ютери, спорт</p>
+    </section>
+
+ <section class="card">
+        <h2>Відгуки роботодавців</h2>
+        <div id="commentsContainer">
+            <div class="comment">
+                <strong>Олександр Коваль (CEO @ CyberGuard Security)</strong>
+                <p>«Віталій проводив внутрішній аудит нашої інфраструктури Active Directory. Проявив глибокі знання сучасних векторів атак та надав детальний репорт із чіткими рекомендаціями щодо закриття вразливостей. Рекомендую як перспективного фахівця!»</p>
+            </div>
+
+            <div class="comment">
+                <strong>Дмитро Шевченко (Lead QA / PM @ TechSolutions)</strong>
+                <p>«Працювали з Віталієм над проектом з веб-пентесту. Він продемонстрував відмінне розуміння OWASP Top 10 та зумів виявити критичні логічні помилки в аутентифікації нашого веб-додатку. Робота виконана чітко та вчасно.»</p>
+            </div>
+
+            <div class="comment">
+                <strong>Марія Бондар (HR Tech @ NetNetwork)</strong>
+                <p>«Віталій брав участь у нашому корпоративному CTF-змаганні, де посів призове місце. Дуже наполегливий, швидко вчиться та має чудовий аналітичний склад розуму. Будемо раді бачити його в команді після завершення навчання!»</p>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<footer id="mainFooter" style="text-align: center; padding: 20px; color: #555;">
+</footer>
+
+<div id="feedbackModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" id="closeModalBtn">&times;</span>
+        <h3>Зворотній зв'язок</h3>
+        <form id="feedbackForm" action="/api/contact" method="POST">
+            <input type="text" name="name" placeholder="Ваше ім'я" required>
+            <input type="email" name="email" placeholder="Ваш Email" required>
+            <input type="text" name="subject" placeholder="Тема листа (не обов'язково)">
+            <textarea name="message" placeholder="Ваше повідомлення" rows="4" required></textarea>
+            <button type="submit">Відправити</button>
+        </form>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

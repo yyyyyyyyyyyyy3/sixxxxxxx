@@ -1,0 +1,126 @@
+document.addEventListener("DOMContentLoaded", () => {
+
+    // 1. Збереження та відображення системної інформації користувача
+    const browserInfo = navigator.userAgent;
+    localStorage.setItem("userSystemInfo", browserInfo);
+    
+    const footer = document.getElementById("mainFooter");
+    const savedInfo = localStorage.getItem("userSystemInfo");
+    if (footer && savedInfo) {
+        footer.innerHTML = `<strong>Інформація про систему (з localStorage):</strong> <br> ${savedInfo}`;
+    }
+
+    // 2. Функція для створення HTML-структури одного відгуку
+    const commentsContainer = document.getElementById("commentsContainer");
+
+    function renderComment(name, email, body) {
+        const commentDiv = document.createElement("div");
+        commentDiv.classList.add("comment");
+        commentDiv.innerHTML = `
+            <strong>${name} (${email})</strong>
+            <p>${body}</p>
+        `;
+        // Додаємо на початок контейнера, щоб новий відгук був зверху
+        commentsContainer.insertBefore(commentDiv, commentsContainer.firstChild);
+    }
+
+    // 3. Завантаження початкових відгуків з jsonplaceholder API
+    fetch("https://jsonplaceholder.typicode.com/posts/1/comments")
+        .then(response => {
+            if (!response.ok) throw new Error("Помилка завантаження даних");
+            return response.json();
+        })
+        .then(comments => {
+            commentsContainer.innerHTML = ""; // Очищаємо текст "Завантаження..."
+            
+            // Відображаємо завантажені відгуки
+            comments.forEach(comment => {
+                renderComment(comment.name, comment.email, comment.body);
+            });
+        })
+        .catch(error => {
+            console.error("Помилка:", error);
+            commentsContainer.innerHTML = "<p>Не вдалося завантажити відгуки.</p>";
+        });
+
+    // 4. Логіка модального вікна зворотного зв'язку
+    const modal = document.getElementById("feedbackModal");
+    const closeModalBtn = document.getElementById("closeModalBtn");
+
+    setTimeout(() => {
+        if (modal) modal.style.display = "block";
+    }, 10000); 
+
+    if (closeModalBtn) {
+        closeModalBtn.addEventListener("click", () => {
+            if (modal) modal.style.display = "none";
+        });
+    }
+
+    window.addEventListener("click", (event) => {
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    });
+
+    // 5. Логіка зміни теми сайту
+    const themeToggleBtn = document.getElementById("themeToggleBtn");
+
+    function setAutomatedTheme() {
+        const currentHour = new Date().getHours();
+        if (currentHour >= 7 && currentHour < 21) {
+            document.body.classList.remove("dark-theme");
+        } else {
+            document.body.classList.add("dark-theme");
+        }
+    }
+    setAutomatedTheme();
+
+    if (themeToggleBtn) {
+        themeToggleBtn.addEventListener("click", () => {
+            document.body.classList.toggle("dark-theme");
+        });
+    }
+
+    // 6. ВІДПРАВКА ФОРМИ + ДОДАВАННЯ ВІДГУКУ НА ЕКРАН
+    const feedbackForm = document.getElementById("feedbackForm");
+    if (feedbackForm) {
+        feedbackForm.addEventListener("submit", async (e) => {
+            e.preventDefault(); 
+            
+            const formData = new FormData(feedbackForm);
+            
+            const name = formData.get("name");
+            const email = formData.get("email");
+            const subject = formData.get("subject") || `Зворотній зв'язок від ${name}`;
+            const message = formData.get("message");
+
+            const payload = { name, email, subject, message };
+
+            try {
+                const response = await fetch('/api/contact', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    alert("Успішно! Лист надіслано через Resend API.");
+                    
+                    // СУПЕР-ФІЧА: Додаємо твій відгук на екран в реальному часі!
+                    renderComment(name, email, message);
+
+                    feedbackForm.reset(); // Очищення форми
+                    if (modal) modal.style.display = "none"; // Закриваємо модалку
+                } else {
+                    alert(`Помилка: ${result.error}`);
+                }
+            } catch (err) {
+                console.error("Помилка:", err);
+                alert("Не вдалося зв'язатися з сервером.");
+            }
+        });
+    }
+});
